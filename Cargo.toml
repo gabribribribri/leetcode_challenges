@@ -5,4 +5,4 @@ resolver = "2"
 
 members = [
   "multiply-strings"
-, "string-to-integer"]
+, "regular-expression-matching", "string-to-integer"]
