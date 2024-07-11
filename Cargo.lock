@@ -5,3 +5,7 @@ version = 3
 [[package]]
 name = "multiply-strings"
 version = "0.1.0"
+
+[[package]]
+name = "string-to-integer"
+version = "0.1.0"
