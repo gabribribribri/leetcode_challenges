@@ -6,7 +6,7 @@ fn main() {
 struct Solution;
 #[cfg(test)]
 mod testing {
-    use crate::{MyExtension, Solution};
+    use super::*;
 
     #[test]
     fn regexp_1() {
@@ -55,83 +55,81 @@ mod testing {
         assert_eq!(Some(&50), je_suis_un_vecteur.last());
     }
 
-    #[test]
-    fn rem_dup_char() {
-        assert_eq!(
-            "aaaaabbbc".chars().remove_duplicate_characters(),
-            "abc".to_string()
-        )
-    }
+    // #[test]
+    // fn rem_dup_char() {
+    //     assert_eq!(
+    //         "aaaaabbbc".chars().remove_duplicate_characters(),
+    //         "abc".to_string()
+    //     )
+    // }
 }
 
 impl Solution {
     pub fn is_match(s: String, p: String) -> bool {
-        let sp = s.chars().remove_duplicate_characters();
-        let pp = RegExpToken::parse(p);
-
-        let mut repeat_until_next_match_found = false;
-        let mut pi = 0;
-        let mut si = 0;
-        while si < sp.len() {
-            if pp[pi].required {
-                if pp[pi].ch != sp.chars().nth(si).unwrap() {
-                    return false;
-                }
-                si += 1;
-            } else {
-                if pp[pi].ch == sp.chars().nth(si).unwrap() {
-                    si += 1;
-                }
-            }
-            //RegExp bounds check
-            pi += 1;
-            if pi >= pp.len() {
-                return false;
-            }
-        }
-        return true;
+        let regexp = p.parse(s);
+        return regexp.is_match();
     }
 }
 
 struct RegExpToken {
     ch: char,
-    required: bool,
+    repeat: bool,
+    matched: bool,
 }
 
-impl RegExpToken {
-    fn parse(p: String) -> Vec<Self> {
-        let mut required = true;
-        let mut parsed = Vec::new();
-        for ch in p.chars().rev() {
-            match ch {
-                '*' => required = false,
-                _ => {
-                    parsed.push(RegExpToken { ch, required });
-                    required = false;
+struct RegExp {
+    sub: String,
+    re: Vec<RegExpToken>,
+}
+
+impl RegExp {
+    fn is_match(&self) -> bool {
+        let mut ri = 0;
+        let mut si = 0;
+        while si < self.sub.len() {
+            if self.re[ri].repeat {
+            } else {
+                if self.sub_at(si) != self.re[ri].ch && self.sub_at(si) != '.' {
+                    return false;
                 }
             }
+            ri += 1;
+            if ri >= self.re.len() {
+                return false;
+            }
         }
-        parsed.reverse();
-        return parsed;
+        if ri != self.re.len() - 1 {
+            return false;
+        }
+        return true;
+    }
+
+    fn sub_at(&self, si: usize) -> char {
+        self.sub.chars().nth(si).unwrap()
+    }
+
+    fn check_for_repeating(&mut self, i: usize) -> bool {
+        todo!()
     }
 }
 
-trait MyExtension: Iterator<Item = char> {
-    fn remove_duplicate_characters(self) -> String
-    where
-        Self: Sized,
-    {
-        let mut reversed = Vec::new();
-        for ch in self {
-            if let Some(last_ch) = reversed.last() {
-                if *last_ch == ch {
-                    continue;
-                }
-            }
-            reversed.push(ch);
-        }
-        return reversed.into_iter().collect();
-    }
+trait ToRegExp {
+    fn parse(self, sub: String) -> RegExp;
 }
 
-impl<I: Iterator<Item = char>> MyExtension for I {}
+impl ToRegExp for String {
+    fn parse(self, sub: String) -> RegExp {
+        let mut re: Vec<RegExpToken> = Vec::new();
+        for ch in self.chars() {
+            if ch == '*' {
+                re.last_mut().unwrap().repeat = true;
+            }
+            re.push(RegExpToken {
+                ch,
+                repeat: false,
+                matched: false,
+            })
+        }
+        return RegExp { re, sub };
+    }
+}
