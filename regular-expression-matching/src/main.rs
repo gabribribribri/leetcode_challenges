@@ -1,12 +1,5 @@
 #![allow(dead_code)]
 
-use std::{
-    any::Any,
-    borrow::{Borrow, BorrowMut},
-    cell::RefCell,
-    collections::HashMap,
-};
-
 fn main() {
     println!("use `cargo test` to verify the implementation");
 }
@@ -103,6 +96,8 @@ mod testing {
     }
 }
 
+use std::{cell::RefCell, collections::HashMap};
+
 impl Solution {
     //p: pattern: regex
     //s: subject
@@ -144,12 +139,8 @@ fn _is_match<'a>(
             let r = _is_match(&s[1..], &p[1..], &dict);
             dict.borrow_mut().insert((s, p), r);
             return r;
-        } else {
-            dict.borrow_mut().insert((s, p), false);
-            return false;
         }
-    } else {
-        dict.borrow_mut().insert((s, p), false);
-        return false;
     }
+    dict.borrow_mut().insert((s, p), false);
+    return false;
 }
