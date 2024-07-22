@@ -84,40 +84,48 @@ mod testing {
             false
         );
     }
+    #[test]
+    fn regexp_13() {
+        assert_eq!(
+            Solution::is_match(
+                "aaaaaaaaaaaaaaaaaaab".to_string(),
+                "a*a*a*a*a*a*a*a*a*a*".to_string()
+            ),
+            false
+        );
+    }
 }
 
 impl Solution {
     //p: pattern: regex
     //s: subject
     pub fn is_match(s: String, p: String) -> bool {
-        // println!("\nCALL WITH\ns:{}\np:{}\n", &s, &p);
-        if p.is_empty() {
-            return s.is_empty();
-        }
+        _is_match(s.as_str(), p.as_str())
+    }
+}
 
-        if let Some('*') = p.chars().nth(1) {
-            if let Some(first_ch) = s.chars().next() {
-                if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
-                    return Solution::is_match(s.clone(), p.chars().skip(2).collect())
-                        || Solution::is_match(s.chars().skip(1).collect(), p.clone())
-                        || Solution::is_match(
-                            s.chars().skip(1).collect(),
-                            p.chars().skip(2).collect(),
-                        );
-                }
-            }
-            return Solution::is_match(s, p.chars().skip(2).collect());
-        } else if let Some(first_ch) = s.chars().next() {
+fn _is_match(s: &str, p: &str) -> bool {
+    // println!("\nCALL WITH\ns:{}\np:{}\n", &s, &p);
+    if p.is_empty() {
+        return s.is_empty();
+    }
+
+    if let Some('*') = p.chars().nth(1) {
+        if let Some(first_ch) = s.chars().next() {
             if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
-                return Solution::is_match(
-                    s.chars().skip(1).collect(),
-                    p.chars().skip(1).collect(),
-                );
-            } else {
-                return false;
+                return _is_match(s, &p[2..])
+                    || _is_match(&s[1..], p)
+                    || _is_match(&s[1..], &p[2..]);
             }
+        }
+        return _is_match(s, &p[2..]);
+    } else if let Some(first_ch) = s.chars().next() {
+        if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
+            return _is_match(&s[1..], &p[1..]);
         } else {
             return false;
         }
+    } else {
+        return false;
     }
 }
