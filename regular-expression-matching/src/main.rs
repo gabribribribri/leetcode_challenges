@@ -1,5 +1,12 @@
 #![allow(dead_code)]
 
+use std::{
+    any::Any,
+    borrow::{Borrow, BorrowMut},
+    cell::RefCell,
+    collections::HashMap,
+};
+
 fn main() {
     println!("use `cargo test` to verify the implementation");
 }
@@ -100,32 +107,49 @@ impl Solution {
     //p: pattern: regex
     //s: subject
     pub fn is_match(s: String, p: String) -> bool {
-        _is_match(s.as_str(), p.as_str())
+        _is_match(s.as_str(), p.as_str(), &RefCell::new(HashMap::new()))
     }
 }
 
-fn _is_match(s: &str, p: &str) -> bool {
+fn _is_match<'a>(
+    s: &'a str,
+    p: &'a str,
+    dict: &RefCell<HashMap<(&'a str, &'a str), bool>>,
+) -> bool {
+    if let Some(r) = dict.borrow().get(&(s, p)) {
+        return *r;
+    }
     // println!("\nCALL WITH\ns:{}\np:{}\n", &s, &p);
     if p.is_empty() {
-        return s.is_empty();
+        let r = s.is_empty();
+        dict.borrow_mut().insert((s, p), r);
+        return r;
     }
 
     if let Some('*') = p.chars().nth(1) {
         if let Some(first_ch) = s.chars().next() {
             if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
-                return _is_match(s, &p[2..])
-                    || _is_match(&s[1..], p)
-                    || _is_match(&s[1..], &p[2..]);
+                let r = _is_match(s, &p[2..], &dict)
+                    || _is_match(&s[1..], p, &dict)
+                    || _is_match(&s[1..], &p[2..], &dict);
+                dict.borrow_mut().insert((s, p), r);
+                return r;
             }
         }
-        return _is_match(s, &p[2..]);
+        let r = _is_match(s, &p[2..], &dict);
+        dict.borrow_mut().insert((s, p), r);
+        return r;
     } else if let Some(first_ch) = s.chars().next() {
         if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
-            return _is_match(&s[1..], &p[1..]);
+            let r = _is_match(&s[1..], &p[1..], &dict);
+            dict.borrow_mut().insert((s, p), r);
+            return r;
         } else {
+            dict.borrow_mut().insert((s, p), false);
             return false;
         }
     } else {
+        dict.borrow_mut().insert((s, p), false);
         return false;
     }
 }
