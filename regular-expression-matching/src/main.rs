@@ -9,127 +9,115 @@ mod testing {
     use super::*;
 
     #[test]
-    fn regexp_1() {
+    fn regexp_01() {
         assert_eq!(Solution::is_match("aa".to_string(), "a".to_string()), false);
     }
     #[test]
-    fn regexp_2() {
+    fn regexp_02() {
         assert_eq!(Solution::is_match("aa".to_string(), "a*".to_string()), true);
     }
     #[test]
-    fn regexp_3() {
+    fn regexp_03() {
         assert_eq!(Solution::is_match("ab".to_string(), ".*".to_string()), true);
     }
     #[test]
-    fn regexp_4() {
+    fn regexp_04() {
         assert_eq!(
             Solution::is_match("aab".to_string(), "c*a*b".to_string()),
             true
         );
     }
     #[test]
-    fn regexp_5() {
+    fn regexp_05() {
         assert_eq!(
             Solution::is_match("mississippi".to_string(), "mis*is*ip*.".to_string()),
             true
         );
     }
     #[test]
-    fn regexp_6() {
+    fn regexp_06() {
         assert_eq!(
             Solution::is_match("aaa".to_string(), "a*a".to_string()),
             true
         );
     }
     #[test]
-    fn regexp_7() {
+    fn regexp_07() {
         assert_eq!(
             Solution::is_match("aaaaaaa".to_string(), "a*aaaaa".to_string()),
             true
         );
     }
-
     #[test]
-    fn vector_last() {
-        let je_suis_un_vecteur = vec![50];
-        assert_eq!(Some(&50), je_suis_un_vecteur.last());
+    fn regexp_08() {
+        assert_eq!(
+            Solution::is_match("abcdef".to_string(), "abcdef".to_string()),
+            true
+        );
+    }
+    #[test]
+    fn regexp_09() {
+        assert_eq!(
+            Solution::is_match("abcdef".to_string(), "ab.def".to_string()),
+            true
+        );
     }
 
-    // #[test]
-    // fn rem_dup_char() {
-    //     assert_eq!(
-    //         "aaaaabbbc".chars().remove_duplicate_characters(),
-    //         "abc".to_string()
-    //     )
-    // }
+    #[test]
+    fn regexp_10() {
+        assert_eq!(Solution::is_match("a".to_string(), "ab*".to_string()), true);
+    }
+    #[test]
+    fn regexp_11() {
+        assert_eq!(
+            Solution::is_match(
+                "aaaaaaaaaaaaab".to_string(),
+                "a*a*a*a*a*a*a*a*a*c".to_string()
+            ),
+            false
+        );
+    }
+    #[test]
+    fn regexp_12() {
+        assert_eq!(
+            Solution::is_match("aaaaaaaaaaaaab".to_string(), "a*c".to_string()),
+            false
+        );
+    }
 }
 
 impl Solution {
+    //p: pattern: regex
+    //s: subject
     pub fn is_match(s: String, p: String) -> bool {
-        let regexp = p.parse(s);
-        return regexp.is_match();
-    }
-}
+        // println!("\nCALL WITH\ns:{}\np:{}\n", &s, &p);
+        if p.is_empty() {
+            return s.is_empty();
+        }
 
-struct RegExpToken {
-    ch: char,
-    repeat: bool,
-    matched: bool,
-}
-
-struct RegExp {
-    sub: String,
-    re: Vec<RegExpToken>,
-}
-
-impl RegExp {
-    fn is_match(&self) -> bool {
-        let mut ri = 0;
-        let mut si = 0;
-        while si < self.sub.len() {
-            if self.re[ri].repeat {
-            } else {
-                if self.sub_at(si) != self.re[ri].ch && self.sub_at(si) != '.' {
-                    return false;
+        if let Some('*') = p.chars().nth(1) {
+            if let Some(first_ch) = s.chars().next() {
+                if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
+                    return Solution::is_match(s.clone(), p.chars().skip(2).collect())
+                        || Solution::is_match(s.chars().skip(1).collect(), p.clone())
+                        || Solution::is_match(
+                            s.chars().skip(1).collect(),
+                            p.chars().skip(2).collect(),
+                        );
                 }
             }
-            ri += 1;
-            if ri >= self.re.len() {
+            return Solution::is_match(s, p.chars().skip(2).collect());
+        } else if let Some(first_ch) = s.chars().next() {
+            if first_ch == p.chars().next().unwrap() || p.chars().next().unwrap() == '.' {
+                return Solution::is_match(
+                    s.chars().skip(1).collect(),
+                    p.chars().skip(1).collect(),
+                );
+            } else {
                 return false;
             }
-        }
-        if ri != self.re.len() - 1 {
+        } else {
             return false;
         }
-        return true;
-    }
-
-    fn sub_at(&self, si: usize) -> char {
-        self.sub.chars().nth(si).unwrap()
-    }
-
-    fn check_for_repeating(&mut self, i: usize) -> bool {
-        todo!()
-    }
-}
-
-trait ToRegExp {
-    fn parse(self, sub: String) -> RegExp;
-}
-
-impl ToRegExp for String {
-    fn parse(self, sub: String) -> RegExp {
-        let mut re: Vec<RegExpToken> = Vec::new();
-        for ch in self.chars() {
-            if ch == '*' {
-                re.last_mut().unwrap().repeat = true;
-            }
-            re.push(RegExpToken {
-                ch,
-                repeat: false,
-                matched: false,
-            })
-        }
-        return RegExp { re, sub };
     }
 }
