@@ -11,6 +11,10 @@ name = "integer-to-roman"
 version = "0.1.0"
 
 [[package]]
+name = "longest-common-prefix"
+version = "0.1.0"
+
+[[package]]
 name = "multiply-strings"
 version = "0.1.0"
 
