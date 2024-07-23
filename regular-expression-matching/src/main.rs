@@ -114,7 +114,6 @@ fn _is_match<'a>(
     if let Some(r) = dict.borrow().get(&(s, p)) {
         return *r;
     }
-    // println!("\nCALL WITH\ns:{}\np:{}\n", &s, &p);
     if p.is_empty() {
         let r = s.is_empty();
         dict.borrow_mut().insert((s, p), r);

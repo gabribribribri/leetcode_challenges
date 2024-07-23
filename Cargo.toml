@@ -3,6 +3,6 @@
 
 resolver = "2"
 
-members = [
+members = [ "container-with-most-water",
   "multiply-strings"
 , "regular-expression-matching", "string-to-integer"]
