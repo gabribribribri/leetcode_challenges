@@ -5,4 +5,4 @@ resolver = "2"
 
 members = [ "container-with-most-water", "integer-to-roman", "longest-common-prefix",
   "multiply-strings"
-, "regular-expression-matching", "string-to-integer"]
+, "regular-expression-matching", "string-to-integer", "three-sum"]
