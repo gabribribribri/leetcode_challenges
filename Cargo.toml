@@ -3,6 +3,13 @@
 
 resolver = "2"
 
-members = [ "container-with-most-water", "integer-to-roman", "longest-common-prefix",
-  "multiply-strings"
-, "regular-expression-matching", "string-to-integer", "three-sum"]
+members = [
+  "container-with-most-water",
+  "integer-to-roman",
+  "longest-common-prefix",
+  "multiply-strings",
+  "regular-expression-matching",
+  "string-to-integer",
+  "the-score-of-students-solving-math-expression",
+  "three-sum"
+]

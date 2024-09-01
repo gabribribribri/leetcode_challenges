@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 struct Solution;
 fn main() {
     println!("welp. not even a cargo test. sowwy");

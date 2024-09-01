@@ -12,7 +12,7 @@ mod caligula {
     fn three_sum_01() {
         assert_eq!(
             Solution::three_sum(vec![-1, 0, 1, 2, -1, -4]),
-            vec![vec![-1, 0, 1], vec![-1, -1, 2],]
+            vec![vec![-1, -1, 2], vec![-1, 0, 1],]
         )
     }
 }
@@ -23,61 +23,31 @@ impl Solution {
     pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
         nums.sort_unstable();
         let mut triplets = Vec::new();
-        let mut m = 1;
-        let mut l = m - 1;
-        let mut r = m + 1;
-        while m >= 1 && m <= nums.len() - 2 {
-            // debugging
-            // for n in &nums {
-            //     print!("{} ", n.abs());
-            // }
-            // println!();
-            // for i in 0..nums.len() {
-            //     print!(
-            //         "{} ",
-            //         if i == l {
-            //             'l'
-            //         } else if i == m {
-            //             'm'
-            //         } else if i == r {
-            //             'r'
-            //         } else {
-            //             ' '
-            //         }
-            //     )
-            // }
-            // println!();
-            //-------------------------
-            let triplet_value = nums[l] + nums[m] + nums[r];
-            if triplet_value == 0 {
-                if !triplets.contains(&vec![nums[l], nums[m], nums[r]]) {
-                    triplets.push(vec![nums[l], nums[m], nums[r]]);
-                }
-                if r == nums.len() - 1 {
-                    m += 1;
-                    l = m - 1;
-                    r = m + 1;
-                } else {
-                    r += 1;
-                }
-            } else if triplet_value > 0 {
-                if l == 0 {
-                    m += 1;
-                    l = m - 1;
-                    r = m + 1;
-                } else {
-                    l -= 1;
-                }
-            } else if triplet_value < 0 {
-                if r == nums.len() - 1 {
-                    m += 1;
-                    l = m - 1;
-                    r = m + 1;
-                } else {
-                    r += 1;
+        for i in 0..nums.len() - 2 {
+            if (i > 0) && (nums[i] == nums[i - 1]) {
+                continue;
+            }
+            let mut l = i + 1;
+            let mut r = nums.len() - 1;
+            while l < r {
+                let curr_tripl = nums[i] + nums[l] + nums[r];
+                if curr_tripl == 0 {
+                    triplets.push(vec![nums[i], nums[l], nums[r]]);
+                    while (r > l) && (nums[r] == nums[r - 1]) {
+                        r -= 1;
+                    }
+                    while (r > l) && (nums[l] == nums[l + 1]) {
+                        l += 1;
+                    }
+                    r -= 1;
+                    l += 1;
+                } else if curr_tripl > 0 {
+                    r -= 1;
+                } else if curr_tripl < 0 {
+                    l += 1;
                 }
             }
         }
-        return triplets;
+        triplets
     }
 }

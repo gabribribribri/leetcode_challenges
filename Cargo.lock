@@ -27,5 +27,9 @@ name = "string-to-integer"
 version = "0.1.0"
 
 [[package]]
+name = "the-score-of-students-solving-math-expression"
+version = "0.1.0"
+
+[[package]]
 name = "three-sum"
 version = "0.1.0"
