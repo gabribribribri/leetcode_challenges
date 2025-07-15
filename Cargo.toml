@@ -6,7 +6,7 @@ resolver = "2"
 members = [
   "container-with-most-water",
   "integer-to-roman",
-  "longest-common-prefix",
+  "longest-common-prefix", "missing-number",
   "multiply-strings",
   "regular-expression-matching",
   "string-to-integer",
