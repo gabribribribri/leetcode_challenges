@@ -26,10 +26,6 @@ mod garglurglug {
 
 struct Solution;
 
-struct HugeInt {
-    val: Vec<u8>
-}
-
 impl Solution {
     pub fn missing_number(nums: Vec<i32>) -> i32 {
         let mut flag = vec![0u8; nums.len()/8+1];
